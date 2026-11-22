@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="http://isdoc.cz/namespace/2013" version="6.0.2">
+  <DocumentType>1</DocumentType>
+  <ID>2026001</ID>
+  <UUID>00000000-0000-4000-8000-000002026001</UUID>
+  <IssuingSystem>Ukázkový generátor</IssuingSystem>
+  <IssueDate>2026-11-01</IssueDate>
+  <TaxPointDate>2026-11-01</TaxPointDate>
+  <VATApplicable>true</VATApplicable>
+  <ElectronicPossibilityAgreementReference/>
+  <Note>Fiktivní ukázková faktura &amp; test znaků &lt;&gt; "uvozovky".</Note>
+  <LocalCurrencyCode>CZK</LocalCurrencyCode>
+  <CurrRate>1</CurrRate>
+  <RefCurrRate>1</RefCurrRate>
+  <AccountingSupplierParty><Party>
+    <PartyIdentification><ID>12345678</ID></PartyIdentification>
+    <PartyName><Name>Příklad Dodavatel s.r.o.</Name></PartyName>
+    <PostalAddress><StreetName>Ukázková</StreetName><BuildingNumber>1</BuildingNumber><CityName>Praha</CityName><PostalZone>110 00</PostalZone><Country><IdentificationCode>CZ</IdentificationCode><Name>Česká republika</Name></Country></PostalAddress>
+    <PartyTaxScheme><CompanyID>CZ12345678</CompanyID><TaxScheme>VAT</TaxScheme></PartyTaxScheme>
+    <Contact><Name>Jan Vzorový</Name><Telephone>+420 000 000 000</Telephone><ElectronicMail>fakturace@priklad.example</ElectronicMail></Contact>
+  </Party></AccountingSupplierParty>
+  <AccountingCustomerParty><Party>
+    <PartyIdentification><ID>87654321</ID></PartyIdentification>
+    <PartyName><Name>Vzorový Odběratel a.s.</Name></PartyName>
+    <PostalAddress><StreetName>Testovací</StreetName><BuildingNumber>22</BuildingNumber><CityName>Brno</CityName><PostalZone>602 00</PostalZone><Country><IdentificationCode>CZ</IdentificationCode><Name>Česká republika</Name></Country></PostalAddress>
+    <PartyTaxScheme><CompanyID>CZ87654321</CompanyID><TaxScheme>VAT</TaxScheme></PartyTaxScheme>
+  </Party></AccountingCustomerParty>
+  <InvoiceLines>
+    <InvoiceLine><ID>1</ID><InvoicedQuantity unitCode="ks">2</InvoicedQuantity><LineExtensionAmount>2000.00</LineExtensionAmount><LineExtensionAmountTaxInclusive>2420.00</LineExtensionAmountTaxInclusive><LineExtensionTaxAmount>420.00</LineExtensionTaxAmount><UnitPrice>1000.00</UnitPrice><UnitPriceTaxInclusive>1210.00</UnitPriceTaxInclusive><ClassifiedTaxCategory><Percent>21</Percent><VATCalculationMethod>0</VATCalculationMethod></ClassifiedTaxCategory><Item><Description>Konzultace – vývoj aplikace</Description></Item></InvoiceLine>
+    <InvoiceLine><ID>2</ID><InvoicedQuantity unitCode="h">1.5</InvoicedQuantity><LineExtensionAmount>1500.00</LineExtensionAmount><LineExtensionAmountTaxInclusive>1725.00</LineExtensionAmountTaxInclusive><LineExtensionTaxAmount>225.00</LineExtensionTaxAmount><UnitPrice>1000.00</UnitPrice><UnitPriceTaxInclusive>1150.00</UnitPriceTaxInclusive><ClassifiedTaxCategory><Percent>15</Percent><VATCalculationMethod>0</VATCalculationMethod></ClassifiedTaxCategory><Item><Description>Školení</Description></Item></InvoiceLine>
+  </InvoiceLines>
+  <TaxTotal>
+    <TaxSubTotal><TaxableAmount>2000.00</TaxableAmount><TaxAmount>420.00</TaxAmount><TaxInclusiveAmount>2420.00</TaxInclusiveAmount><AlreadyClaimedTaxableAmount>0</AlreadyClaimedTaxableAmount><AlreadyClaimedTaxAmount>0</AlreadyClaimedTaxAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount><DifferenceTaxableAmount>2000.00</DifferenceTaxableAmount><DifferenceTaxAmount>420.00</DifferenceTaxAmount><DifferenceTaxInclusiveAmount>2420.00</DifferenceTaxInclusiveAmount><TaxCategory><Percent>21</Percent></TaxCategory></TaxSubTotal>
+    <TaxSubTotal><TaxableAmount>1500.00</TaxableAmount><TaxAmount>225.00</TaxAmount><TaxInclusiveAmount>1725.00</TaxInclusiveAmount><AlreadyClaimedTaxableAmount>0</AlreadyClaimedTaxableAmount><AlreadyClaimedTaxAmount>0</AlreadyClaimedTaxAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount><DifferenceTaxableAmount>1500.00</DifferenceTaxableAmount><DifferenceTaxAmount>225.00</DifferenceTaxAmount><DifferenceTaxInclusiveAmount>1725.00</DifferenceTaxInclusiveAmount><TaxCategory><Percent>15</Percent></TaxCategory></TaxSubTotal>
+    <TaxAmount>645.00</TaxAmount>
+  </TaxTotal>
+  <LegalMonetaryTotal>
+    <TaxExclusiveAmount>3500.00</TaxExclusiveAmount><TaxInclusiveAmount>4145.00</TaxInclusiveAmount>
+    <AlreadyClaimedTaxExclusiveAmount>0</AlreadyClaimedTaxExclusiveAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount>
+    <DifferenceTaxExclusiveAmount>3500.00</DifferenceTaxExclusiveAmount><DifferenceTaxInclusiveAmount>4145.00</DifferenceTaxInclusiveAmount>
+    <PayableRoundingAmount>0</PayableRoundingAmount><PaidDepositsAmount>0</PaidDepositsAmount><PayableAmount>1.00</PayableAmount>
+  </LegalMonetaryTotal>
+  <PaymentMeans><Payment><PaidAmount>4145.00</PaidAmount><PaymentMeansCode>42</PaymentMeansCode><Details>
+    <PaymentDueDate>2026-11-15</PaymentDueDate><ID>19-2000145399</ID><BankCode>0800</BankCode><Name>Příklad banka</Name><IBAN>CZ6508000000192000145399</IBAN><BIC>GIBACZPX</BIC>
+    <VariableSymbol>2026001</VariableSymbol><ConstantSymbol>308</ConstantSymbol>
+  </Details></Payment></PaymentMeans>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>Xc9YZXp1wc6ExO0o36beqvsv3+dKp9woSke6EVvKCiE=</DigestValue></Reference></SignedInfo><SignatureValue>qh89lW3O2LYZa1lnozX9FjhegrjgdAOPr7k1oMbUk1zDPc6eNhiJuHuJb/2EitKFZ7YoJXwibCKzIvpmw46kKgTP2cgM27rljbfuHRrLES9vp7y7mbBEL75/+XBLu/qeZ3/aR4MuP6J3mhXJJ2pOudUxjHB5j/yKg52PclLw1rW3tM1xbpajVD8BngG+tvoSX+3S+aVQ4Orf/MldtRrI1PK33LMIj6glmesuC/2GBNCQMkz75aJ6Z06XB00WbxvFWB5GJuwPQOhcpSPTFEUfJ6DIoGq5U6Lh1uJ+H7PAAlPgXB9/MNHuI3VaMo+J4osT3ajzGAAPHCxdbRI3OVpA3Q==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIDRDCCAiygAwIBAgIUDiR+qMxwZTyD9dCu3gdv0GymMaAwDQYJKoZIhvcNAQELBQAwQjEaMBgGA1UEAwwRVGVzdCBQb2RlcGlzdWppY2kxFzAVBgNVBAoMDlByaWtsYWQgcy5yLm8uMQswCQYDVQQGEwJDWjAeFw0yNjExMjEyMzI3NTlaFw0yNzExMjEyMzI3NTlaMEIxGjAYBgNVBAMMEVRlc3QgUG9kZXBpc3VqaWNpMRcwFQYDVQQKDA5QcmlrbGFkIHMuci5vLjELMAkGA1UEBhMCQ1owggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDnn5086pT1amITcTuNnK9kABlii/KmjL6qeXh5rjo8oDMfMobH/hxFqbLZE+42V2ZppLS1LFPHtfZ1S92Wsw/4CTKaelJtSG8KoW/5Xk42MC8/zAjDIKnxa1yjS8ggCoVBoOzCjCWE05jr4+gTDlWSRucgrrcQ1HIyeBBW0EDcinJCZQC/08Rr75Rxm5L3V0gzYU+ZB9Pr5VMRKyQgLkyOwPcWiv/IJ1rYJYN1IAKPPpCJA5HUmrLR5Q1ZlYBR72cuXaGntKtSZ2oniPsi6E4xIqqzTdZr3k39ErZf3bx89SJtsdPauppQWLIqzDw3o59OgxbRmSzm/Z3ZJjg7897JAgMBAAGjMjAwMB0GA1UdDgQWBBQF4nSIcuI2viMnP4WW4SyS/GbwTjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCvRR4eiZrYhojAX6Zg2kaneGwYHaEt157k/7iRc3CcmxOncoYanis5y0uVALziR9Gkug84fI8rl8EsSoxxMBp5Ld4vfzEFqw0re7DBLHb8LoYHYKF+y3cvfprUx2FBdhkRuubO+t+e2Lf3tWKyhhWrWZemLPLVtYfYMqLRVPdIxFLns80+2iSj0Eqn5PlywPNbw2XgZH5NuWpuJv5Rfz3v2hgMpAFDDdImJ01TRdIz9fgo7iZZRvBJHqO0iIsUrxNLgYVAj4ACH0q/4HhtFmG5WaSQaggoPDW0AsRr3QMMdenGlM6zQwdetAklEa2tO/KzoVsMQNwrFdOWOXRvAIG6</X509Certificate></X509Data></KeyInfo></Signature></Invoice>

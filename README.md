@@ -1,0 +1,89 @@
+# ISDOC viewer
+
+A small installable web app (PWA) that displays [ISDOC](https://isdoc.cz/) invoices (`.isdoc`, `.isdocx`) using
+XSLT, checks their electronic signature and validity, and offers a QR code for paying the invoice.
+Everything runs in the browser – files are never uploaded anywhere.
+
+## Features
+
+- **Opens** `.isdoc` and `.isdocx` (attachments of an ISDOCX archive can be downloaded). Drag & drop, a file
+  picker, or the OS file handler once the app is installed.
+- **XSLT layouts** (more can be added): *Standard*, *UOL IIS* (the look of the UOL IIS invoice, laid out to fit the
+  Czech window envelope) and *Source code* (indented, syntax‑highlighted XML).
+- **8 languages** for both the app and the invoice: Czech, Slovak, English, Spanish, German, French, Italian,
+  Portuguese. The invoice language is independent of the app language (it follows it until you change it).
+- **Signature check** (XMLDSig, enveloped): reference digests and the signature value are verified with WebCrypto
+  (RSA‑SHA1/256/384/512, ECDSA); signer, issuer, validity and signing time are shown.
+  Trust in the certificate chain (CA) and revocation are **not** checked.
+- **ISDOC version and validation** against the official XSD schemas (libxml2 compiled to WebAssembly), with the
+  list of errors and line numbers.
+- **Lenient display of invalid documents**: schema‑invalid invoices are still rendered; typical defects (junk before
+  the XML, unescaped `&`, missing namespace) are repaired automatically and reported; well‑formed non‑ISDOC XML is
+  shown as source code; broken XML is shown as numbered text with the faulty line highlighted.
+- **QR payment**: Czech QR payment (SPAYD) and SEPA/EPC QR for any currency. Enabled by default for CZK (Czech QR)
+  and EUR (SEPA); both can be switched on manually. In the *UOL IIS* layout the codes are framed according to the
+  graphic manual of the Czech Banking Association (qr-platba.cz).
+- **Works offline** after the first visit (service worker).
+
+## Run locally
+
+There is no build step. Serve the `docs/` folder with any static web server, e.g.:
+
+```bash
+python3 -m http.server 8765 --directory docs
+```
+
+then open <http://localhost:8765>. A service worker and installation need HTTPS or `localhost`.
+
+## Publish with GitHub Pages
+
+The site is the `docs/` folder: in the repository settings choose **Pages → Deploy from a branch → `main` / `/docs`**.
+All paths in the app are relative, so it also works from a sub-path such as `https://<user>.github.io/isdoc/`.
+
+## Project layout
+
+```
+docs/                      the whole web app (what GitHub Pages serves)
+  index.html, style.css, manifest.webmanifest, sw.js
+  js/
+    app.js                 UI, file loading, banners, rendering
+    dsig.js                C14N + XMLDSig verification (WebCrypto)
+    validate.js            ISDOC version detection, XSD validation
+    tolerant.js            lenient XML loading and repairs
+    payment.js             IBAN, SPAYD, EPC, QR code
+    lang.js, templates.js  languages and layout registry
+  lang/*.json              texts of the app (ui_*) and of the invoices, number/date formats
+  templates/*.xsl          XSLT 1.0 layouts with {{key}} placeholders
+  schemas/                 ISDOC XSD schemas
+  vendor/                  third-party libraries (see THIRD_PARTY_NOTICES.md)
+  samples/                 fictional example invoices (unsigned, signed, tampered, ISDOCX, EUR)
+LICENSE, THIRD_PARTY_NOTICES.md, AGENTS.md
+```
+
+## Extending
+
+- **New language** – add `docs/lang/xx.json` with the same keys as `cs.json` and put the code into `LANGS`
+  in `docs/js/lang.js`.
+- **New layout** – add `docs/templates/<id>.xsl` (use the same `{{key}}` placeholders; texts and formats stay in
+  `lang/*.json`), register it in `docs/js/templates.js` and add a translated name `ui_tpl_<id>` to every
+  `lang/*.json`. The layout switcher appears automatically.
+- **New ISDOC schema version** – put `docs/schemas/isdoc-invoice-X.Y.Z.xsd` there, add a line to `SCHEMAS` in
+  `docs/js/validate.js` and the file name to `SCHEMA_FILES` in `docs/sw.js`. Only add schemas whose header
+  grants permission to redistribute (see THIRD_PARTY_NOTICES.md).
+- After changing any file, bump `VERSION` in `docs/sw.js` so installed copies refresh.
+
+## Notes and limitations
+
+- Native XSLT is being removed from browsers (Chrome), so the app ships an XSLT polyfill (libxslt in
+  WebAssembly) that is used only where `XSLTProcessor` is missing.
+- The preview is rendered in a sandboxed iframe without scripts and with a strict Content‑Security‑Policy, so an
+  invoice cannot run code or load remote resources (the supplier logo from ISDOC extensions is deliberately not loaded).
+- ECDSA signatures are implemented but were not tested against an independent signer.
+- ISDOC schemas 5.1, 5.2 and 5.2.1 are not included (no permission to redistribute); such documents are validated
+  against the closest available schema.
+
+## License
+
+The project's own code is released under the [MIT License](LICENSE). Third‑party components in `docs/vendor/` and
+`docs/schemas/` keep their own licenses – see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). In particular, the
+ISDOC schemas are **not** covered by the MIT license.

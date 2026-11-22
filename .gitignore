@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# editors / tooling
+.idea/
+.vscode/
+*.swp
+.claude/
+.claude-flow/
+
+# dependencies and build output (the app has no build step)
+node_modules/
+dist/
+*.log
+npm-debug.log*
+
+# local secrets and scratch
+.env
+.env.*
+*.pem
+*.key
+scratch/
+tmp/
+
+# real invoices must never be committed (samples in docs/samples are fictional)
+/private/
+*.private.isdoc
+*.private.isdocx

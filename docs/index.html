@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="cs">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title data-i18n="title">ISDOC viewer</title>
+	<meta name="theme-color" content="#1f4e8c">
+	<meta name="description" content="View ISDOC and ISDOCX invoices, check the signature and pay by QR code.">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="icons/icon-192.png">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header class="bar">
+		<h1>ISDOC</h1>
+		<div class="actions">
+			<select id="lang" class="btn" data-i18n-attr="aria-label:appLangLabel,title:appLangLabel"></select>
+			<label class="btn primary" for="file" data-i18n="open">Open file</label>
+			<input id="file" type="file" accept=".isdoc,.isdocx,.xml,application/xml,text/xml" hidden>
+			<button class="btn" id="print" data-i18n="print" disabled>Print</button>
+		</div>
+	</header>
+
+	<main>
+		<section id="drop" class="drop">
+			<p><strong data-i18n="dropTitle">Drop an .isdoc or .isdocx file here</strong></p>
+			<p class="muted" data-i18n="dropText"></p>
+		</section>
+
+		<section id="error" class="error" hidden></section>
+
+		<section id="val" class="sig" hidden>
+			<div class="sig-head"><span class="dot"></span><strong id="val-title"></strong></div>
+			<p id="val-text" class="muted"></p>
+			<details id="val-details"><summary data-i18n="valDetails">Validation details</summary><div id="val-body"></div></details>
+		</section>
+
+		<section id="sig" class="sig" hidden>
+			<div class="sig-head"><span id="sig-icon" class="dot"></span><strong id="sig-title"></strong></div>
+			<p id="sig-text" class="muted"></p>
+			<details id="sig-details"><summary data-i18n="sigDetails">Signature details</summary><div id="sig-body"></div></details>
+		</section>
+
+		<section id="opts" class="opts" hidden>
+			<label id="tpl-wrap" hidden><span data-i18n="tplLabel">Invoice layout</span>
+				<select id="tpl"></select></label>
+			<label id="inv-lang-wrap"><span data-i18n="invLangLabel">Invoice language</span>
+				<select id="inv-lang"></select></label>
+			<span id="qr" class="qr-opts" hidden>
+				<strong data-i18n="qrLabel">QR payment:</strong>
+				<label id="opt-spayd" hidden><input type="checkbox" id="chk-spayd"> <span data-i18n="qrSpayd"></span></label>
+				<label id="opt-epc" hidden><input type="checkbox" id="chk-epc"> <span data-i18n="qrEpc"></span></label>
+			</span>
+		</section>
+
+		<section id="att" class="att" hidden>
+			<strong data-i18n="attLabel">ISDOCX attachments:</strong> <span id="att-list"></span>
+		</section>
+
+		<iframe id="view" data-i18n-attr="title:viewTitle" sandbox="allow-same-origin allow-modals" hidden></iframe>
+	</main>
+
+	<script src="vendor/jszip.min.js"></script>
+	<script src="vendor/qrcode.js"></script>
+	<script src="js/xslt-config.js"></script>
+	<script src="vendor/xslt-polyfill.min.js" charset="utf-8"></script>
+	<script type="module" src="js/app.js"></script>
+</body>
+</html>
