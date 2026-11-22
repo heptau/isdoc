@@ -66,7 +66,7 @@
 	"ui_open": "Otevřít soubor",
 	"ui_print": "Tisk",
 	"ui_dropTitle": "Přetáhněte sem soubor .isdoc nebo .isdocx",
-	"ui_dropText": "nebo použijte tlačítko „Otevřít soubor“. Soubor se nikam neodesílá, vše běží ve vašem prohlížeči.",
+	"ui_dropText": "nebo použijte tlačítko „Otevřít“. Soubor se nikam neodesílá, vše běží ve vašem počítači.",
 	"ui_qrLabel": "QR platba:",
 	"ui_qrSpayd": "česká (SPAYD)",
 	"ui_qrEpc": "SEPA (EPC) – libovolná měna",
@@ -159,5 +159,12 @@
 	"uolRegistered": "Registrováno",
 	"ui_tpl_uol": "UOL IIS",
 	"uolQrSpayd": "QR platba",
-	"uolQrEpc": "SEPA platba"
+	"uolQrEpc": "SEPA platba",
+	"ui_sponsor": "Podpořit projekt",
+	"ui_star": "Dát hvězdičku na GitHubu",
+	"ui_toggleTheme": "Přepnout světlý/tmavý vzhled",
+	"ui_openShort": "Otevřít",
+	"ui_offlineReady": "Aplikace je připravená pracovat offline.",
+	"ui_updateReady": "Je k dispozici nová verze aplikace.",
+	"ui_reload": "Načíst znovu"
 }

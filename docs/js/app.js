@@ -164,6 +164,15 @@ function renderSignature(result) {
 	$('sig-body').innerHTML = body.join('');
 }
 
+/** After the preview loads: fit the iframe height to its content and pass the theme to the document inside. */
+function onFrameLoad(frame) {
+	const d = frame.contentDocument;
+	if (!d) return;
+	d.documentElement.dataset.theme = document.documentElement.dataset.theme || 'light';
+	const h = d.documentElement.scrollHeight;
+	if (h) frame.style.height = h + 8 + 'px';
+}
+
 /** Banner with the ISDOC version and the validation result (state is in current.val). */
 function renderValidation() {
 	const box = $('val');
@@ -239,7 +248,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 async function renderInvoice() {
 	const frame = $('view');
 	if (current.rawText !== undefined) { // file that cannot be read as XML: plain text
-		frame.onload = () => { const h = frame.contentDocument.documentElement.scrollHeight; if (h) frame.style.height = h + 8 + 'px'; };
+		frame.onload = () => onFrameLoad(frame);
 		frame.srcdoc = rawHtml(current.rawText, current.rawLine);
 		frame.hidden = false;
 		$('print').disabled = false;
@@ -265,7 +274,7 @@ async function renderInvoice() {
 		// Transformation failed (template error, document too complex…): the preview stays, the file is shown as text.
 		console.error(e);
 		showError({ tx: true, message: t('e_xslt') + ' (' + (e && e.message || e) + ')' });
-		frame.onload = () => { const h = frame.contentDocument.documentElement.scrollHeight; if (h) frame.style.height = h + 8 + 'px'; };
+		frame.onload = () => onFrameLoad(frame);
 		frame.srcdoc = rawHtml(current.text || '', null);
 		frame.hidden = false;
 		$('print').disabled = false;
@@ -277,10 +286,7 @@ async function renderInvoice() {
 	csp.setAttribute('http-equiv', 'Content-Security-Policy');
 	csp.setAttribute('content', "default-src 'none'; img-src data:; style-src 'unsafe-inline'");
 	out.head.prepend(csp);
-	frame.onload = () => {
-		const h = frame.contentDocument && frame.contentDocument.documentElement.scrollHeight;
-		if (h) frame.style.height = h + 8 + 'px';
-	};
+	frame.onload = () => onFrameLoad(frame);
 	frame.srcdoc = '<!doctype html>' + out.documentElement.outerHTML;
 	frame.hidden = false;
 	$('print').disabled = false;
@@ -414,19 +420,64 @@ async function applyLang() {
 	await refreshInvoice();
 }
 
+/* ------------------------------ Theme ------------------------------ */
+
+// Light/dark theme: the saved choice, otherwise the system preference (until the user toggles it).
+const systemDark = matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(theme) {
+	document.documentElement.dataset.theme = theme;
+	const d = $('view').contentDocument;
+	if (d && d.documentElement) d.documentElement.dataset.theme = theme; // source / plain-text previews follow the theme
+	const meta = document.querySelector('meta[name=theme-color]');
+	if (meta) meta.content = theme === 'dark' ? '#14171c' : '#1f4e8c';
+}
+$('theme').addEventListener('click', () => {
+	const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+	store('theme', next);
+	applyTheme(next);
+});
+systemDark.addEventListener('change', e => { if (!['light', 'dark'].includes(stored('theme'))) applyTheme(e.matches ? 'dark' : 'light'); });
+applyTheme(document.documentElement.dataset.theme || (systemDark.matches ? 'dark' : 'light'));
+
 /* ------------------------------ Events ------------------------------ */
 
 $('file').addEventListener('change', e => { const f = e.target.files[0]; if (f) openFile(f); e.target.value = ''; });
 const langList = await languageNames();
-const langOptions = langList.map(([c, n]) => '<option value="' + c + '">' + esc(n) + '</option>').join('');
-$('lang').innerHTML = $('inv-lang').innerHTML = langOptions;
-$('lang').value = appLang;
-await applyLang();
-$('lang').addEventListener('change', () => {
-	appLang = $('lang').value;
+$('inv-lang').innerHTML = langList.map(([c, n]) => '<option value="' + c + '">' + esc(n) + '</option>').join('');
+
+// App language menu: opens after a click on the globe icon.
+function renderLangMenu() {
+	$('langMenu').innerHTML = langList.map(([c, n]) =>
+		'<button type="button" role="menuitemradio" data-code="' + c + '" aria-checked="' + (c === appLang) + '"><span>' + esc(n) + '</span><span class="code">' + c + '</span></button>').join('');
+}
+function setLangMenu(open) {
+	$('langMenu').hidden = !open;
+	$('langBtn').setAttribute('aria-expanded', String(open));
+	if (open) { renderLangMenu(); ($('langMenu').querySelector('[aria-checked="true"]') || $('langMenu').firstElementChild).focus(); }
+}
+$('langBtn').addEventListener('click', () => setLangMenu($('langMenu').hidden));
+$('langMenu').addEventListener('click', e => {
+	const item = e.target.closest('[data-code]');
+	if (!item) return;
+	appLang = item.dataset.code;
 	store('lang', appLang);
+	setLangMenu(false);
+	$('langBtn').focus();
 	applyLang();
 });
+document.addEventListener('click', e => { if (!$('langMenu').hidden && !e.target.closest('.langmenu')) setLangMenu(false); });
+document.addEventListener('keydown', e => {
+	if ($('langMenu').hidden) return;
+	const items = [...$('langMenu').querySelectorAll('button')];
+	const i = items.indexOf(document.activeElement);
+	if (e.key === 'Escape') { setLangMenu(false); $('langBtn').focus(); }
+	else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+	else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+	else if (e.key === 'Home') { e.preventDefault(); items[0].focus(); }
+	else if (e.key === 'End') { e.preventDefault(); items[items.length - 1].focus(); }
+	else if (e.key === 'Tab') setLangMenu(false);
+});
+await applyLang();
 $('inv-lang').addEventListener('change', () => {
 	invLang = $('inv-lang').value; // for this session only, not persisted
 	refreshInvoice();
@@ -450,13 +501,44 @@ addEventListener('drop', e => {
 	if (f) openFile(f);
 });
 
-// Opening a file through the OS (PWA file_handlers)
+// Opening a file through the OS (PWA file_handlers + launch_handler): the installed app gets the files via launchQueue.
+// The viewer shows one document at a time, so the first file is opened.
 if ('launchQueue' in window) {
 	launchQueue.setConsumer(async params => {
-		if (params.files && params.files.length) openFile(await params.files[0].getFile());
+		if (!params.files || !params.files.length) return;
+		try { openFile(await params.files[0].getFile()); } catch (e) { console.warn('launchQueue', e); }
 	});
 }
 
+/* ------------------------------ Offline and updates ------------------------------ */
+
+let toastTimer = 0;
+/** Shows a short notice; with `action` it also shows a button (e.g. Reload) and stays until dismissed. */
+function showToast(textKey, action) {
+	clearTimeout(toastTimer);
+	$('toast-text').textContent = t(textKey);
+	const btn = $('toast-action');
+	btn.hidden = !action;
+	if (action) { btn.textContent = t(action.labelKey); btn.onclick = action.run; }
+	$('toast').hidden = false;
+	if (!action) toastTimer = setTimeout(() => { $('toast').hidden = true; }, 6000);
+}
+
 if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW', e));
+	let controlled = !!navigator.serviceWorker.controller; // false on the very first visit
+	navigator.serviceWorker.addEventListener('message', e => {
+		if (!e.data || e.data.type !== 'activated') return;
+		if (!controlled) { // first install: everything is cached now
+			controlled = true;
+			showToast('offlineReady');
+		} else if (e.data.version !== self.APP_VERSION) { // a newer app version took over while this page is open
+			if (!current) location.reload(); // nothing open: update right away
+			else showToast('updateReady', { labelKey: 'reload', run: () => location.reload() });
+		}
+	});
+	navigator.serviceWorker.register('sw.js').then(reg => {
+		const check = () => reg.update().catch(() => {}); // fetches sw.js and version.js; installs a new version if they changed
+		check(); // update check at startup
+		document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); }); // installed apps stay open for days
+	}).catch(e => console.warn('SW', e));
 }

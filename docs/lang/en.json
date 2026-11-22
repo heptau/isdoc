@@ -61,12 +61,12 @@
 	"qrSpayd": "Czech QR payment",
 	"qrEpc": "SEPA QR payment (EPC)",
 	"locale": "en-GB",
-	"ui_title": "ISDOC viewer",
+	"ui_title": "ISDOC Viewer",
 	"ui_description": "View ISDOC and ISDOCX invoices, check the signature and pay by QR code.",
 	"ui_open": "Open file",
 	"ui_print": "Print",
 	"ui_dropTitle": "Drop an .isdoc or .isdocx file here",
-	"ui_dropText": "or use the “Open file” button. The file is not uploaded anywhere – everything runs in your browser.",
+	"ui_dropText": "or use the “Open” button. The file is not uploaded anywhere – everything runs on your device.",
 	"ui_qrLabel": "QR payment:",
 	"ui_qrSpayd": "Czech (SPAYD)",
 	"ui_qrEpc": "SEPA (EPC) – any currency",
@@ -159,5 +159,12 @@
 	"uolRegistered": "Registered",
 	"ui_tpl_uol": "UOL IIS",
 	"uolQrSpayd": "QR payment",
-	"uolQrEpc": "SEPA payment"
+	"uolQrEpc": "SEPA payment",
+	"ui_sponsor": "Sponsor",
+	"ui_star": "Star on GitHub",
+	"ui_toggleTheme": "Switch light/dark theme",
+	"ui_openShort": "Open",
+	"ui_offlineReady": "The app is ready to work offline.",
+	"ui_updateReady": "A new version of the app is available.",
+	"ui_reload": "Reload"
 }

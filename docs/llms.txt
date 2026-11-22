@@ -1,6 +1,6 @@
-# ISDOC viewer
+# ISDOC Viewer
 
-> A free, installable web app (PWA) that opens ISDOC and ISDOCX invoices (the Czech electronic invoice format) in the browser, renders them with XSLT, verifies the electronic signature, validates the document against the official XSD schemas and offers a QR code for paying the invoice. Everything runs locally in the browser; files are never uploaded.
+> A free, installable web app (PWA) that opens ISDOC and ISDOCX invoices (the Czech electronic invoice format) in the browser, renders them with XSLT, verifies the electronic signature, validates the document against the official XSD schemas and offers a QR code for paying the invoice. Everything runs locally on your device (in the browser or as an installed app); files are never uploaded.
 
 Site: https://isdoc.80.cz/ · Source code (MIT): https://github.com/heptau/isdoc
 
@@ -14,7 +14,7 @@ What it does:
 - Creates the Czech QR payment (SPAYD) and the SEPA/EPC QR code (any currency) from the payment details of the invoice.
 - Works offline after the first visit.
 
-Privacy: no data leaves the browser, there is no server-side processing, no analytics and no external requests at runtime.
+Privacy: no data leaves your device, there is no server-side processing, no analytics and no external requests at runtime.
 
 ## Docs
 

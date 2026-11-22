@@ -1,20 +1,82 @@
 :root {
+	color-scheme: light;
 	--bg: #f3f5f8; --fg: #1b1f23; --muted: #667085; --card: #fff; --line: #d6dbe3;
 	--brand: #1f4e8c; --ok: #1a7f37; --warn: #b26a00; --bad: #c62828;
 }
+/* Dark theme: explicit choice, or the system preference while no choice was made (before the script runs). */
+:root[data-theme="dark"] {
+	color-scheme: dark;
+	--bg: #14171c; --fg: #e6e9ee; --muted: #9aa4b2; --card: #1e2229; --line: #333a45; --brand: #6aa3f0; --ok: #4cc38a; --warn: #f0b34a; --bad: #ff7b72;
+}
 @media (prefers-color-scheme: dark) {
-	:root { --bg: #14171c; --fg: #e6e9ee; --muted: #9aa4b2; --card: #1e2229; --line: #333a45; --brand: #6aa3f0; --ok: #4cc38a; --warn: #f0b34a; --bad: #ff7b72; }
+	:root:not([data-theme]) {
+		color-scheme: dark;
+		--bg: #14171c; --fg: #e6e9ee; --muted: #9aa4b2; --card: #1e2229; --line: #333a45; --brand: #6aa3f0; --ok: #4cc38a; --warn: #f0b34a; --bad: #ff7b72;
+	}
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { margin: 0; background: var(--bg); color: var(--fg);
 	font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-.bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center;
+.bar { position: sticky; top: 0; z-index: 2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px 12px;
 	padding: 8px 16px; padding-top: max(8px, env(safe-area-inset-top)); background: var(--card); border-bottom: 1px solid var(--line); }
-.bar h1 { margin: 0; font-size: 18px; letter-spacing: .04em; }
-.actions { display: flex; gap: 8px; }
+.brand { margin: 0; font-size: 18px; letter-spacing: .02em; justify-self: start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.brand-short { display: none; }
+/* Little room: just "ISDOC", so the title never wraps or gets cut. */
+@media (max-width: 540px) {
+	.brand-full { display: none; }
+	.brand-short { display: inline; }
+}
+.center { display: flex; gap: 8px; justify-self: center; }
+.tools { display: flex; gap: 2px; align-items: center; justify-self: end; }
 .btn { font: inherit; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--card);
-	color: var(--fg); cursor: pointer; }
+	color: var(--fg); cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+.btn { white-space: nowrap; }
+.btn .ico { flex: none; }
+.lbl-short { display: none; }
+/* Narrow widths: "Open" instead of "Open file" so the button never wraps to two lines. */
+@media (max-width: 900px) {
+	.lbl-long { display: none; }
+	.lbl-short { display: inline; }
+}
+/* Little room: icons only (the buttons keep their title and aria-label). */
+@media (max-width: 640px) {
+	.btn .lbl { display: none; }
+	.btn { padding: 7px 12px; }
+}
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 0; border-radius: 8px;
+	background: none; color: var(--muted); cursor: pointer; text-decoration: none; padding: 0; }
+.icon-btn:hover, .icon-btn:focus-visible { background: color-mix(in srgb, var(--fg) 8%, transparent); color: var(--fg); }
+.icon-btn.heart:hover { color: #e0245e; }
+.icon-btn.star:hover { color: #d99a00; }
+#theme .sun { display: none; }
+:root[data-theme="dark"] #theme .sun { display: block; }
+:root[data-theme="dark"] #theme .moon { display: none; }
+/* Language menu: opens after a click on the globe icon. */
+.langmenu { position: relative; }
+.menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 10; min-width: 170px; padding: 4px; background: var(--card);
+	border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .22); }
+.menu button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 7px 10px; border: 0; border-radius: 6px;
+	background: none; color: var(--fg); font: inherit; text-align: left; cursor: pointer; white-space: nowrap; }
+.menu button:hover, .menu button:focus-visible { background: color-mix(in srgb, var(--fg) 9%, transparent); outline: none; }
+.menu button[aria-checked="true"] { font-weight: 600; color: var(--brand); }
+.menu .code { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+@media (max-width: 320px) {
+	.bar { padding-left: 6px; padding-right: 6px; gap: 4px; }
+	.brand { font-size: 14px; }
+	.center { gap: 4px; }
+	.btn { padding: 6px 8px; }
+	.icon-btn { width: 26px; height: 30px; }
+}
+/* Not enough room for one row: first the heart, then the star disappear ("ISDOC", the buttons, theme and language stay). */
+@media (max-width: 290px) { #sponsor { display: none; } }
+@media (max-width: 260px) { #star { display: none; } }
+@media (max-width: 480px) {
+	.bar { padding-left: 10px; padding-right: 10px; gap: 8px; }
+	.brand { font-size: 15px; letter-spacing: 0; }
+	.tools { gap: 0; }
+	.icon-btn { width: 30px; height: 32px; }
+}
 .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
 .btn:disabled { opacity: .45; cursor: default; }
 main { max-width: 900px; margin: 0 auto; padding: 16px; display: grid; gap: 12px; }
@@ -41,3 +103,9 @@ main { max-width: 900px; margin: 0 auto; padding: 16px; display: grid; gap: 12px
 .att-file { font: inherit; background: none; border: 0; padding: 0 12px 0 0; color: var(--brand); cursor: pointer; text-decoration: underline; }
 #view { width: 100%; border: 1px solid var(--line); border-radius: 6px; background: #e9ecef; min-height: 400px; }
 @media print { .bar, .drop, .sig, .opts, .att, .error { display: none !important; } main { padding: 0; } #view { border: 0; } }
+
+/* Toast: offline-ready / update notice */
+.toast { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 20; display: flex; align-items: center; gap: 12px;
+	max-width: calc(100vw - 24px); padding: 10px 14px; background: var(--fg); color: var(--bg); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .3); font-size: 14px; }
+.toast .btn { padding: 4px 12px; background: var(--bg); color: var(--fg); border-color: transparent; }
+@media print { .toast { display: none !important; } }

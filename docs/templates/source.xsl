@@ -17,7 +17,8 @@
 	<title>XML</title>
 	<style>
 		:root{--bg:#fff;--fg:#1f2328;--punct:#6e7781;--tag:#116329;--attr:#0550ae;--val:#0a3069;--cmt:#6e7781;--pi:#8250df;--ln:#8c959f;--line:#d0d7de}
-		@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--punct:#8b949e;--tag:#7ee787;--attr:#79c0ff;--val:#a5d6ff;--cmt:#8b949e;--pi:#d2a8ff;--ln:#6e7681;--line:#30363d}}
+		:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--punct:#8b949e;--tag:#7ee787;--attr:#79c0ff;--val:#a5d6ff;--cmt:#8b949e;--pi:#d2a8ff;--ln:#6e7681;--line:#30363d}
+		@media (prefers-color-scheme:dark){:root:not([data-theme]){--bg:#0d1117;--fg:#e6edf3;--punct:#8b949e;--tag:#7ee787;--attr:#79c0ff;--val:#a5d6ff;--cmt:#8b949e;--pi:#d2a8ff;--ln:#6e7681;--line:#30363d}}
 		html,body{margin:0;background:var(--bg);color:var(--fg)}
 		.code{counter-reset:ln;padding:10px 0;font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
 		.l{counter-increment:ln;white-space:pre-wrap;word-break:break-all;padding:0 12px 0 56px;position:relative}

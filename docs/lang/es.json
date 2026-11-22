@@ -66,7 +66,7 @@
 	"ui_open": "Abrir archivo",
 	"ui_print": "Imprimir",
 	"ui_dropTitle": "Arrastre aquí un archivo .isdoc o .isdocx",
-	"ui_dropText": "o use el botón «Abrir archivo». El archivo no se envía a ningún sitio; todo se ejecuta en su navegador.",
+	"ui_dropText": "o use el botón «Abrir». El archivo no se envía a ningún sitio; todo se ejecuta en su dispositivo.",
 	"ui_qrLabel": "Pago QR:",
 	"ui_qrSpayd": "checo (SPAYD)",
 	"ui_qrEpc": "SEPA (EPC) – cualquier moneda",
@@ -159,5 +159,12 @@
 	"uolRegistered": "Registrado",
 	"ui_tpl_uol": "UOL IIS",
 	"uolQrSpayd": "Pago QR",
-	"uolQrEpc": "Pago SEPA"
+	"uolQrEpc": "Pago SEPA",
+	"ui_sponsor": "Patrocinar",
+	"ui_star": "Dar una estrella en GitHub",
+	"ui_toggleTheme": "Cambiar tema claro/oscuro",
+	"ui_openShort": "Abrir",
+	"ui_offlineReady": "La aplicación está lista para funcionar sin conexión.",
+	"ui_updateReady": "Hay una nueva versión de la aplicación.",
+	"ui_reload": "Recargar"
 }

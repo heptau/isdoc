@@ -12,8 +12,8 @@ schemas and offers QR payments. The whole site is the `docs/` folder (GitHub Pag
   render the samples in `docs/samples/` in every template x language; render a "worst case" invoice (long names, foreign
   currency, discounts, delivery address, longest document type) and look for overlapping text / text outside boxes;
   round-trip the *Source code* view (re-parse the displayed text and compare canonical forms with the original).
-- After editing static files the browser may keep a stale copy (HTTP cache and the service worker). Bump `VERSION` in
-  `docs/sw.js`, or hard-reload / unregister the service worker while testing.
+- After editing static files the browser may keep a stale copy (HTTP cache and the service worker). Bump `APP_VERSION` in
+  `docs/js/version.js` (single source for the page and `docs/sw.js`), or hard-reload / unregister the service worker while testing.
 
 ## Conventions
 - Documentation and all code comments are in **English**. Texts shown to users live in `docs/lang/*.json`

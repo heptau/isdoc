@@ -66,7 +66,7 @@
 	"ui_open": "Datei öffnen",
 	"ui_print": "Drucken",
 	"ui_dropTitle": "Ziehen Sie eine .isdoc- oder .isdocx-Datei hierher",
-	"ui_dropText": "oder verwenden Sie die Schaltfläche „Datei öffnen“. Die Datei wird nirgendwohin gesendet – alles läuft in Ihrem Browser.",
+	"ui_dropText": "oder verwenden Sie die Schaltfläche „Öffnen“. Die Datei wird nirgendwohin gesendet – alles läuft auf Ihrem Gerät.",
 	"ui_qrLabel": "QR-Zahlung:",
 	"ui_qrSpayd": "tschechisch (SPAYD)",
 	"ui_qrEpc": "SEPA (EPC) – beliebige Währung",
@@ -159,5 +159,12 @@
 	"uolRegistered": "Eingetragen",
 	"ui_tpl_uol": "UOL IIS",
 	"uolQrSpayd": "QR-Zahlung",
-	"uolQrEpc": "SEPA-Zahlung"
+	"uolQrEpc": "SEPA-Zahlung",
+	"ui_sponsor": "Unterstützen",
+	"ui_star": "Auf GitHub mit einem Stern markieren",
+	"ui_toggleTheme": "Zwischen hellem und dunklem Design wechseln",
+	"ui_openShort": "Öffnen",
+	"ui_offlineReady": "Die App ist bereit für den Offline-Betrieb.",
+	"ui_updateReady": "Eine neue Version der App ist verfügbar.",
+	"ui_reload": "Neu laden"
 }

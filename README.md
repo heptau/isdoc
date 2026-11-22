@@ -1,8 +1,8 @@
-# ISDOC viewer
+# ISDOC Viewer
 
 A small installable web app (PWA) that displays [ISDOC](https://isdoc.cz/) invoices (`.isdoc`, `.isdocx`) using
 XSLT, checks their electronic signature and validity, and offers a QR code for paying the invoice.
-Everything runs in the browser – files are never uploaded anywhere.
+Everything runs on your device (in the browser, or as an installed app) – files are never uploaded anywhere.
 
 Live site: <https://isdoc.80.cz/> · Source: <https://github.com/heptau/isdoc>
 
@@ -25,7 +25,18 @@ Live site: <https://isdoc.80.cz/> · Source: <https://github.com/heptau/isdoc>
 - **QR payment**: Czech QR payment (SPAYD) and SEPA/EPC QR for any currency. Enabled by default for CZK (Czech QR)
   and EUR (SEPA); both can be switched on manually. In the *UOL IIS* layout the codes are framed according to the
   graphic manual of the Czech Banking Association (qr-platba.cz).
-- **Works offline** after the first visit (service worker).
+- **Light / dark theme** switch (remembered; follows the system preference until you change it) and links to sponsor
+  the project and to star it on GitHub.
+- **Works offline** after the first visit (service worker precaches the whole app). On every start it checks for a new
+  version and installs it; if no document is open the app reloads itself, otherwise it shows a *Reload* button.
+
+## Opening files from the system
+
+When the app is **installed** (Chrome/Edge: *Install* in the address bar or menu; works on Windows, macOS, Linux and
+ChromeOS), it registers itself as a handler for `.isdoc` and `.isdocx` files (`file_handlers` in the manifest). Then
+*Open with → ISDOC Viewer* works in the file manager, and you can make it the default app for these extensions in the
+OS file settings. A file opened this way goes to the already running window (`launch_handler`). Safari, Firefox and
+mobile browsers do not support file handlers; there, use the *Open* button or drag & drop.
 
 ## Run locally
 
@@ -74,7 +85,8 @@ LICENSE, THIRD_PARTY_NOTICES.md, AGENTS.md
 - **New ISDOC schema version** – put `docs/schemas/isdoc-invoice-X.Y.Z.xsd` there, add a line to `SCHEMAS` in
   `docs/js/validate.js` and the file name to `SCHEMA_FILES` in `docs/sw.js`. Only add schemas whose header
   grants permission to redistribute (see THIRD_PARTY_NOTICES.md).
-- After changing any file, bump `VERSION` in `docs/sw.js` so installed copies refresh.
+- After changing any file of the app, bump `APP_VERSION` in `docs/js/version.js` (shared by the page and the service worker)
+  so installed copies update and offer a reload.
 
 ## Notes and limitations
 
