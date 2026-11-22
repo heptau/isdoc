@@ -1,5 +1,5 @@
 // Offline cache of the app shell. Bump VERSION when files change.
-const VERSION = 'isdoc-v16';
+const VERSION = 'isdoc-v17';
 const SCHEMA_FILES = ['5.2.2','5.2.3','5.3','5.3.1','6.0.1','6.0.2'].map(v => 'schemas/isdoc-invoice-' + v + '.xsd');
 const ASSETS = [
 	'./', 'index.html', 'style.css', 'templates/standard.xsl', 'templates/uol.xsl', 'templates/source.xsl', 'manifest.webmanifest',

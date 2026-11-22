@@ -4,6 +4,8 @@ A small installable web app (PWA) that displays [ISDOC](https://isdoc.cz/) invoi
 XSLT, checks their electronic signature and validity, and offers a QR code for paying the invoice.
 Everything runs in the browser – files are never uploaded anywhere.
 
+Live site: <https://isdoc.80.cz/> · Source: <https://github.com/heptau/isdoc>
+
 ## Features
 
 - **Opens** `.isdoc` and `.isdocx` (attachments of an ISDOCX archive can be downloaded). Drag & drop, a file
@@ -38,7 +40,9 @@ then open <http://localhost:8765>. A service worker and installation need HTTPS 
 ## Publish with GitHub Pages
 
 The site is the `docs/` folder: in the repository settings choose **Pages → Deploy from a branch → `main` / `/docs`**.
+The custom domain `isdoc.80.cz` is set by `docs/CNAME`; point a DNS `CNAME` record of `isdoc.80.cz` to `heptau.github.io`.
 All paths in the app are relative, so it also works from a sub-path such as `https://<user>.github.io/isdoc/`.
+`docs/llms.txt` describes the site for LLMs ([llmstxt.org](https://llmstxt.org/) format); keep it in sync with the features.
 
 ## Project layout
 

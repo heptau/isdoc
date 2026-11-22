@@ -20,7 +20,9 @@ schemas and offers QR payments. The whole site is the `docs/` folder (GitHub Pag
   (`ui_*` keys = the app, other keys = invoice templates). Never hard-code user-visible Czech/English strings in JS or XSL.
 - No external runtime requests: everything the app needs is in `docs/` (vendored libraries, schemas). The invoice preview
   is a sandboxed iframe (`allow-same-origin allow-modals`, no scripts) with a CSP, and must not load remote resources.
-- All paths are relative so the site works from a sub-path (`https://<user>.github.io/isdoc/`).
+- All paths are relative so the site works from a sub-path (`https://<user>.github.io/isdoc/`). The production URL is
+  `https://isdoc.80.cz/` (`docs/CNAME`; do not delete that file or Pages loses the custom domain).
+- `docs/llms.txt` describes the site for LLMs (llmstxt.org format). Update it when features, sample files or URLs change.
 - Adding a language / layout / schema: see "Extending" in `README.md`. Keep every `lang/*.json` in sync (same keys).
 
 ## Gotchas learned the hard way

@@ -1,0 +1,41 @@
+# ISDOC viewer
+
+> A free, installable web app (PWA) that opens ISDOC and ISDOCX invoices (the Czech electronic invoice format) in the browser, renders them with XSLT, verifies the electronic signature, validates the document against the official XSD schemas and offers a QR code for paying the invoice. Everything runs locally in the browser; files are never uploaded.
+
+Site: https://isdoc.80.cz/ · Source code (MIT): https://github.com/heptau/isdoc
+
+What it does:
+- Opens `.isdoc` and `.isdocx` files (drag & drop, file picker, or as an installed app). Attachments of an ISDOCX archive can be downloaded.
+- Renders invoices with three XSLT layouts: Standard, UOL IIS (laid out for a Czech window envelope) and Source code (syntax-highlighted XML).
+- Eight languages for the app and, independently, for the invoice: Czech, Slovak, English, Spanish, German, French, Italian, Portuguese.
+- Checks the XMLDSig signature (digests and signature value via WebCrypto; shows signer, issuer and validity). It does not check the trust chain or revocation of the certificate.
+- Detects the ISDOC version and validates against the ISDOC XSD schemas (5.2.2 to 6.0.2) with a list of errors and line numbers.
+- Still displays invalid documents: repairs typical defects, shows non-ISDOC XML as source code and malformed XML as numbered text.
+- Creates the Czech QR payment (SPAYD) and the SEPA/EPC QR code (any currency) from the payment details of the invoice.
+- Works offline after the first visit.
+
+Privacy: no data leaves the browser, there is no server-side processing, no analytics and no external requests at runtime.
+
+## Docs
+
+- [Web app](https://isdoc.80.cz/): open an ISDOC or ISDOCX file and view it
+- [README](https://github.com/heptau/isdoc/blob/main/README.md): features, running locally, project layout, how to add a language, layout or schema
+- [AGENTS.md](https://github.com/heptau/isdoc/blob/main/AGENTS.md): notes for AI coding agents and contributors (conventions, gotchas, licensing rules)
+- [Third-party notices](https://github.com/heptau/isdoc/blob/main/THIRD_PARTY_NOTICES.md): licenses of bundled libraries and the ISDOC schemas
+- [License](https://github.com/heptau/isdoc/blob/main/LICENSE): MIT for the project's own code
+
+## Sample files
+
+All sample invoices are fictional.
+
+- [Unsigned invoice (CZK)](https://isdoc.80.cz/samples/ukazka-nepodepsana.isdoc)
+- [Signed invoice, valid signature](https://isdoc.80.cz/samples/ukazka-podepsana.isdoc)
+- [Signed invoice, C14N 1.0 and SHA-1](https://isdoc.80.cz/samples/ukazka-podepsana-c14n10-sha1.isdoc)
+- [Signed invoice, tampered after signing](https://isdoc.80.cz/samples/ukazka-podpis-neplatny.isdoc)
+- [Invoice in EUR with IBAN and BIC](https://isdoc.80.cz/samples/ukazka-eur.isdoc)
+- [ISDOCX archive with an attachment](https://isdoc.80.cz/samples/ukazka.isdocx)
+
+## Optional
+
+- [ISDOC format and schemas](https://isdoc.cz/): the official specification of the ISDOC format
+- [QR Platba](https://qr-platba.cz/): the Czech QR payment standard and its graphic manual
