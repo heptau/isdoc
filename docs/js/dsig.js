@@ -1,6 +1,6 @@
 // XMLDSig verification (enveloped signature in ISDOC) without external libraries: C14N + WebCrypto.
 // Checks mathematical validity (reference digests + SignedInfo signature) and reads certificate details.
-// It does NOT verify the trust of the certificate chain up to a CA (offline).
+// It does NOT verify the trust of the certificate chain up to a CA.
 export const DSIG = 'http://www.w3.org/2000/09/xmldsig#';
 const XMLNS = 'http://www.w3.org/2000/xmlns/';
 

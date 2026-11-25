@@ -89,7 +89,14 @@
 					<input id="certFile" type="file" multiple accept=".pem,.crt,.cer,.key,.txt" hidden></div>
 				<p id="certErr" class="form-error" role="alert" hidden></p>
 				<p class="muted small" data-i18n="signAddHint"></p>
-				<p class="muted small" data-i18n="signHint"></p>
+				<div class="cmd">
+					<p class="muted small" data-i18n="signConvert"></p>
+					<pre><code>openssl pkcs12 -in cert.p12 -nodes -out cert.pem</code></pre>
+				</div>
+				<div class="cmd">
+					<p class="muted small" data-i18n="signGenerate"></p>
+					<pre><code>openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -subj "/CN=Jan Novak" -keyout key.pem -out cert.pem &amp;&amp; cat key.pem cert.pem &gt; signing.pem</code></pre>
+				</div>
 				<p class="muted small" data-i18n="signFpHint"></p>
 				<div class="dlg-actions">
 					<button type="button" class="btn" id="signCancel" data-i18n="signCancel">Cancel</button>
