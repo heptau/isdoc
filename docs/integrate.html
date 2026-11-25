@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send an ISDOC document to the viewer</title>
+<style>body{font:16px/1.5 system-ui,sans-serif;max-width:40rem;margin:2rem auto;padding:0 1rem}button{font:inherit;padding:.5rem 1rem}pre{background:#f3f5f8;padding:.75rem;overflow:auto}</style>
+</head>
+<body>
+<h1>Send an ISDOC document to the viewer</h1>
+<p>The button opens the ISDOC Viewer in a new window and sends it the sample invoice stored in the <code>ISDOC</code>
+variable below. Read the script at the bottom of this page: it is the whole integration.</p>
+<p><button id="send">Open the sample invoice in the viewer</button> <span id="status"></span></p>
+<p><label>Viewer URL <input id="url" size="40"></label></p>
+<script>
+// 1. The document to send (any ISDOC text; here the fictional sample from docs/samples).
+const ISDOC = `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="http://isdoc.cz/namespace/2013" version="6.0.2">
+  <DocumentType>1</DocumentType>
+  <ID>2026001</ID>
+  <UUID>00000000-0000-4000-8000-000002026001</UUID>
+  <IssuingSystem>Ukázkový generátor</IssuingSystem>
+  <IssueDate>2026-11-01</IssueDate>
+  <TaxPointDate>2026-11-01</TaxPointDate>
+  <VATApplicable>true</VATApplicable>
+  <ElectronicPossibilityAgreementReference/>
+  <Note>Fiktivní ukázková faktura &amp; test znaků &lt;&gt; "uvozovky".</Note>
+  <LocalCurrencyCode>CZK</LocalCurrencyCode>
+  <CurrRate>1</CurrRate>
+  <RefCurrRate>1</RefCurrRate>
+  <AccountingSupplierParty><Party>
+    <PartyIdentification><ID>12345678</ID></PartyIdentification>
+    <PartyName><Name>Příklad Dodavatel s.r.o.</Name></PartyName>
+    <PostalAddress><StreetName>Ukázková</StreetName><BuildingNumber>1</BuildingNumber><CityName>Praha</CityName><PostalZone>110 00</PostalZone><Country><IdentificationCode>CZ</IdentificationCode><Name>Česká republika</Name></Country></PostalAddress>
+    <PartyTaxScheme><CompanyID>CZ12345678</CompanyID><TaxScheme>VAT</TaxScheme></PartyTaxScheme>
+    <Contact><Name>Jan Vzorový</Name><Telephone>+420 000 000 000</Telephone><ElectronicMail>fakturace@priklad.example</ElectronicMail></Contact>
+  </Party></AccountingSupplierParty>
+  <AccountingCustomerParty><Party>
+    <PartyIdentification><ID>87654321</ID></PartyIdentification>
+    <PartyName><Name>Vzorový Odběratel a.s.</Name></PartyName>
+    <PostalAddress><StreetName>Testovací</StreetName><BuildingNumber>22</BuildingNumber><CityName>Brno</CityName><PostalZone>602 00</PostalZone><Country><IdentificationCode>CZ</IdentificationCode><Name>Česká republika</Name></Country></PostalAddress>
+    <PartyTaxScheme><CompanyID>CZ87654321</CompanyID><TaxScheme>VAT</TaxScheme></PartyTaxScheme>
+  </Party></AccountingCustomerParty>
+  <InvoiceLines>
+    <InvoiceLine><ID>1</ID><InvoicedQuantity unitCode="ks">2</InvoicedQuantity><LineExtensionAmount>2000.00</LineExtensionAmount><LineExtensionAmountTaxInclusive>2420.00</LineExtensionAmountTaxInclusive><LineExtensionTaxAmount>420.00</LineExtensionTaxAmount><UnitPrice>1000.00</UnitPrice><UnitPriceTaxInclusive>1210.00</UnitPriceTaxInclusive><ClassifiedTaxCategory><Percent>21</Percent><VATCalculationMethod>0</VATCalculationMethod></ClassifiedTaxCategory><Item><Description>Konzultace – vývoj aplikace</Description></Item></InvoiceLine>
+    <InvoiceLine><ID>2</ID><InvoicedQuantity unitCode="h">1.5</InvoicedQuantity><LineExtensionAmount>1500.00</LineExtensionAmount><LineExtensionAmountTaxInclusive>1725.00</LineExtensionAmountTaxInclusive><LineExtensionTaxAmount>225.00</LineExtensionTaxAmount><UnitPrice>1000.00</UnitPrice><UnitPriceTaxInclusive>1150.00</UnitPriceTaxInclusive><ClassifiedTaxCategory><Percent>15</Percent><VATCalculationMethod>0</VATCalculationMethod></ClassifiedTaxCategory><Item><Description>Školení</Description></Item></InvoiceLine>
+  </InvoiceLines>
+  <TaxTotal>
+    <TaxSubTotal><TaxableAmount>2000.00</TaxableAmount><TaxAmount>420.00</TaxAmount><TaxInclusiveAmount>2420.00</TaxInclusiveAmount><AlreadyClaimedTaxableAmount>0</AlreadyClaimedTaxableAmount><AlreadyClaimedTaxAmount>0</AlreadyClaimedTaxAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount><DifferenceTaxableAmount>2000.00</DifferenceTaxableAmount><DifferenceTaxAmount>420.00</DifferenceTaxAmount><DifferenceTaxInclusiveAmount>2420.00</DifferenceTaxInclusiveAmount><TaxCategory><Percent>21</Percent></TaxCategory></TaxSubTotal>
+    <TaxSubTotal><TaxableAmount>1500.00</TaxableAmount><TaxAmount>225.00</TaxAmount><TaxInclusiveAmount>1725.00</TaxInclusiveAmount><AlreadyClaimedTaxableAmount>0</AlreadyClaimedTaxableAmount><AlreadyClaimedTaxAmount>0</AlreadyClaimedTaxAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount><DifferenceTaxableAmount>1500.00</DifferenceTaxableAmount><DifferenceTaxAmount>225.00</DifferenceTaxAmount><DifferenceTaxInclusiveAmount>1725.00</DifferenceTaxInclusiveAmount><TaxCategory><Percent>15</Percent></TaxCategory></TaxSubTotal>
+    <TaxAmount>645.00</TaxAmount>
+  </TaxTotal>
+  <LegalMonetaryTotal>
+    <TaxExclusiveAmount>3500.00</TaxExclusiveAmount><TaxInclusiveAmount>4145.00</TaxInclusiveAmount>
+    <AlreadyClaimedTaxExclusiveAmount>0</AlreadyClaimedTaxExclusiveAmount><AlreadyClaimedTaxInclusiveAmount>0</AlreadyClaimedTaxInclusiveAmount>
+    <DifferenceTaxExclusiveAmount>3500.00</DifferenceTaxExclusiveAmount><DifferenceTaxInclusiveAmount>4145.00</DifferenceTaxInclusiveAmount>
+    <PayableRoundingAmount>0</PayableRoundingAmount><PaidDepositsAmount>0</PaidDepositsAmount><PayableAmount>4145.00</PayableAmount>
+  </LegalMonetaryTotal>
+  <PaymentMeans><Payment><PaidAmount>4145.00</PaidAmount><PaymentMeansCode>42</PaymentMeansCode><Details>
+    <PaymentDueDate>2026-11-15</PaymentDueDate><ID>19-2000145399</ID><BankCode>0800</BankCode><Name>Příklad banka</Name><IBAN>CZ6508000000192000145399</IBAN><BIC>GIBACZPX</BIC>
+    <VariableSymbol>2026001</VariableSymbol><ConstantSymbol>308</ConstantSymbol>
+  </Details></Payment></PaymentMeans>
+</Invoice>
+`;
+
+// 2. Open the viewer and send the document as soon as it says it is ready. Nothing goes through a server or a URL.
+function openInViewer(viewerUrl, xmlText, fileName) {
+	const origin = new URL(viewerUrl).origin;
+	const viewer = window.open(viewerUrl);
+	if (!viewer) return Promise.reject(new Error('The browser blocked the new window (allow pop-ups).'));
+	return new Promise((resolve, reject) => {
+		let sent = false; // the viewer repeats "ready" for a few seconds, send the document only once
+		function onMessage(e) {
+			if (e.source !== viewer || e.origin !== origin || !e.data) return;
+			if (e.data.type === 'isdoc-ready' && !sent) {
+				sent = true;
+				const file = new Blob([xmlText], { type: 'application/xml' });
+				viewer.postMessage({ type: 'isdoc-file', name: fileName, file }, origin);
+			} else if (e.data.type === 'isdoc-received') {
+				removeEventListener('message', onMessage);
+				resolve();
+			} else if (e.data.type === 'isdoc-error') {
+				removeEventListener('message', onMessage);
+				reject(new Error(e.data.code));
+			}
+		}
+		addEventListener('message', onMessage);
+	});
+}
+
+// --- demo wiring (not part of the integration) ---
+const url = document.getElementById('url');
+url.value = location.origin + location.pathname.replace(/\/+[^\/]*$/, '/'); // the folder this page is in = the viewer
+document.getElementById('send').addEventListener('click', () => {
+	const status = document.getElementById('status');
+	status.textContent = 'Waiting for the viewer...';
+	openInViewer(url.value, ISDOC, 'ukazka.isdoc').then(
+		() => { status.textContent = 'The viewer received the document.'; },
+		err => { status.textContent = 'Error: ' + err.message; });
+});
+</script>
+</body>
+</html>

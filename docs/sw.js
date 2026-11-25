@@ -9,7 +9,7 @@ const VERSION = self.APP_VERSION;
 const NETWORK_TIMEOUT = 6000; // ms; after that the cached copy is served if there is one
 const SCHEMA_FILES = ['5.2.2', '5.2.3', '5.3', '5.3.1', '6.0.1', '6.0.2'].map(v => 'schemas/isdoc-invoice-' + v + '.xsd');
 const ASSETS = [
-	'./', 'index.html', 'style.css', 'manifest.webmanifest',
+	'./', 'index.html', 'style.css', 'manifest.webmanifest', 'integrate.html',
 	'templates/standard.xsl', 'templates/uol.xsl', 'templates/source.xsl',
 	'js/version.js', 'js/app.js', 'js/lang.js', 'js/templates.js', 'js/dsig.js', 'js/sign.js', 'js/payment.js', 'js/validate.js', 'js/tolerant.js', 'js/xslt-config.js',
 	...['cs', 'sk', 'en', 'es', 'de', 'fr', 'it', 'pt'].map(c => 'lang/' + c + '.json'),
@@ -27,7 +27,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
 	e.waitUntil((async () => {
-		for (const key of await caches.keys()) if (key !== VERSION) await caches.delete(key);
+		for (const key of await caches.keys()) if (key !== VERSION && key !== 'shared-inbox') await caches.delete(key);
 		await self.clients.claim();
 		for (const client of await self.clients.matchAll({ type: 'window' })) client.postMessage({ type: 'activated', version: VERSION });
 	})());
@@ -35,9 +35,25 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
 	const req = e.request;
+	if (req.method === 'POST' && new URL(req.url).origin === location.origin && new URL(req.url).pathname.endsWith('/share-target')) {
+		e.respondWith(receiveShared(req));
+		return;
+	}
 	if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
 	e.respondWith(networkFirst(req));
 });
+
+// Web Share Target (POST multipart): keep the file for the page and redirect to it; the page reads and deletes it.
+async function receiveShared(req) {
+	try {
+		const file = (await req.formData()).get('file');
+		if (file && typeof file !== 'string') {
+			const cache = await caches.open('shared-inbox');
+			await cache.put('shared-file', new Response(file, { headers: { 'X-File-Name': encodeURIComponent(file.name || '') } }));
+		}
+	} catch (err) { console.warn('share-target', err); }
+	return Response.redirect('./?shared=1', 303);
+}
 
 async function networkFirst(req) {
 	const cache = await caches.open(VERSION);

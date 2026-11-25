@@ -570,6 +570,48 @@ if ('launchQueue' in window) {
 	});
 }
 
+// Receiving a document from another page (window.open / iframe) through postMessage. Nothing goes through a server or a URL.
+//   viewer -> opener/parent: { type: 'isdoc-ready' }  (repeated until the document arrives or for a few seconds)
+//   sender -> viewer:        { type: 'isdoc-file', name, file }  (file = Blob or ArrayBuffer)
+//   viewer -> sender:        { type: 'isdoc-received' } or { type: 'isdoc-error', code }
+// The document is as untrusted as a dropped file (sandboxed preview, no scripts), so any origin may send it, but only
+// the window that opened (or embeds) the viewer.
+const MAX_MESSAGE_FILE = 50 * 1024 * 1024;
+const sender = window.opener || (window.parent !== window ? window.parent : null);
+if (sender) {
+	let received = false;
+	addEventListener('message', async e => {
+		const m = e.data;
+		if (e.source !== sender || !m || m.type !== 'isdoc-file') return;
+		const reply = msg => { try { sender.postMessage(msg, e.origin === 'null' ? '*' : e.origin); } catch { /* sender is gone */ } };
+		const blob = m.file instanceof ArrayBuffer ? new Blob([m.file]) : m.file;
+		if (!(blob instanceof Blob)) return reply({ type: 'isdoc-error', code: 'bad-file' });
+		if (blob.size > MAX_MESSAGE_FILE) return reply({ type: 'isdoc-error', code: 'too-large' });
+		received = true;
+		await openFile(new File([blob], typeof m.name === 'string' && m.name ? m.name.slice(0, 200) : 'document.isdoc'));
+		reply({ type: 'isdoc-received' });
+	});
+	const ready = () => { try { sender.postMessage({ type: 'isdoc-ready' }, '*'); } catch { /* sender is gone */ } };
+	ready();
+	let tries = 0;
+	const timer = setInterval(() => { if (received || ++tries > 20) clearInterval(timer); else ready(); }, 500);
+}
+
+// Web Share Target: the service worker stores a POSTed file in the "shared-inbox" cache and redirects to ./?shared=1.
+if (new URLSearchParams(location.search).has('shared')) {
+	history.replaceState(null, '', location.pathname);
+	try {
+		const cache = await caches.open('shared-inbox');
+		const res = await cache.match('shared-file');
+		if (res) {
+			const name = decodeURIComponent(res.headers.get('X-File-Name') || '') || 'document.isdoc';
+			const blob = await res.blob();
+			await cache.delete('shared-file');
+			openFile(new File([blob], name));
+		}
+	} catch (e) { console.warn('shared inbox', e); }
+}
+
 /* ------------------------------ Offline and updates ------------------------------ */
 
 let toastTimer = 0;

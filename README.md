@@ -52,6 +52,32 @@ ChromeOS), it registers itself as a handler for `.isdoc` and `.isdocx` files (`f
 OS file settings. A file opened this way goes to the already running window (`launch_handler`). Safari, Firefox and
 mobile browsers do not support file handlers; there, use the *Open* button or drag & drop.
 
+## Sending a document from another app or site
+
+The viewer has no backend, so the document is never put in a URL or posted to a server. Two ways in:
+
+**1. `postMessage` (web page -> viewer, recommended).** Open the viewer with `window.open` (or embed it in an iframe) and
+send the file when it announces itself. Any origin may send; only the window that opened/embeds the viewer is accepted.
+
+```js
+const viewer = window.open('https://isdoc.80.cz/');
+addEventListener('message', e => {
+  if (e.source !== viewer || e.data?.type !== 'isdoc-ready') return;
+  viewer.postMessage({ type: 'isdoc-file', name: 'faktura.isdoc', file: blob }, 'https://isdoc.80.cz');
+});
+// the viewer answers { type: 'isdoc-received' } or { type: 'isdoc-error', code: 'bad-file' | 'too-large' } (limit 50 MB)
+```
+
+**2. Web Share Target (`POST multipart/form-data`).** The installed PWA appears in the system *Share* sheet (Android,
+Chrome/Edge). The manifest `share_target` posts the file (field `file`) to `./share-target`, which the service worker
+intercepts and redirects to `./?shared=1`. A plain HTML form on another site can do the same
+(`<form method="post" enctype="multipart/form-data" action="https://isdoc.80.cz/share-target" target="_blank">`),
+but only if the visitor already opened the viewer once (the service worker must exist; the static host cannot handle POST).
+iOS/Safari and Firefox do not support share targets.
+
+A runnable example of the `postMessage` way is `docs/integrate.html`: it holds a sample invoice in a JS variable and a
+button opens the viewer with it (`make serve`, then open `/integrate.html`; the viewer URL field can point to another origin).
+
 ## Run locally
 
 There is no build step. Serve the `docs/` folder with any static web server, e.g.:
