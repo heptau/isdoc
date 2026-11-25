@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
 	<meta charset="utf-8">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-/+4YSK/YDTKE1qH59czZ7JWOOZRkJS1/c7fBAe36GoQ=' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self' blob:; frame-src 'self' blob: about:; object-src 'none'; base-uri 'none'; form-action 'none'">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title data-i18n="title">ISDOC Viewer</title>
 	<meta name="theme-color" content="#1f4e8c">
@@ -27,6 +28,7 @@
 			<label class="btn primary" for="file" data-i18n-attr="title:open,aria-label:open"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1"/><path d="M3 10h19l-2 7.5a2 2 0 0 1-2 1.5H5a2 2 0 0 1-2-2z"/></svg><span class="lbl lbl-long" data-i18n="open">Open file</span><span class="lbl lbl-short" data-i18n="openShort">Open</span></label>
 			<input id="file" type="file" accept=".isdoc,.isdocx,.xml,application/xml,text/xml" hidden>
 			<button class="btn" id="print" type="button" data-i18n-attr="title:print,aria-label:print" disabled><svg class="ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><rect x="7" y="14" width="10" height="7"/></svg><span class="lbl" data-i18n="print">Print</span></button>
+			<button class="btn" id="sign" type="button" data-i18n-attr="title:sign,aria-label:sign" disabled><svg class="ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h4l11-11a2.1 2.1 0 0 0-4-4L3 17z"/><path d="M13 7l4 4M14 21h7"/></svg><span class="lbl" data-i18n="sign">Sign</span></button>
 		</div>
 		<div class="tools">
 			<a class="icon-btn heart" id="sponsor" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" data-i18n-attr="title:sponsor,aria-label:sponsor"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-8-4.6-8-10.3A4.7 4.7 0 0 1 12 7.4a4.7 4.7 0 0 1 8 2.8c0 5.7-8 10.3-8 10.3z"/></svg></a>
@@ -65,9 +67,10 @@
 			<label id="inv-lang-wrap"><span data-i18n="invLangLabel">Invoice language</span>
 				<select id="inv-lang"></select></label>
 			<span id="qr" class="qr-opts" hidden>
-				<strong data-i18n="qrLabel">QR payment:</strong>
+				<strong data-i18n="showLabel">Show:</strong>
 				<label id="opt-spayd" hidden><input type="checkbox" id="chk-spayd"> <span data-i18n="qrSpayd"></span></label>
 				<label id="opt-epc" hidden><input type="checkbox" id="chk-epc"> <span data-i18n="qrEpc"></span></label>
+				<label id="opt-sig" hidden><input type="checkbox" id="chk-sig"> <span data-i18n="qrSig"></span></label>
 			</span>
 		</section>
 
@@ -76,6 +79,24 @@
 		</section>
 
 		<iframe id="view" data-i18n-attr="title:viewTitle" sandbox="allow-same-origin allow-modals" hidden></iframe>
+		<dialog id="signDlg" class="dlg" aria-labelledby="signTitle">
+			<form method="dialog" id="signForm">
+				<h2 id="signTitle" data-i18n="signTitle">Sign the document</h2>
+				<p id="signAlready" class="error warn" hidden data-i18n="signAlready"></p>
+				<p class="muted" data-i18n="signChoose">Sign with certificate:</p>
+				<div id="certList" class="cert-list" role="radiogroup" data-i18n-attr="aria-label:signChoose"></div>
+				<div><button type="button" class="btn" id="certAdd" data-i18n="signAdd">Add certificate…</button>
+					<input id="certFile" type="file" multiple accept=".pem,.crt,.cer,.key,.txt" hidden></div>
+				<p id="certErr" class="form-error" role="alert" hidden></p>
+				<p class="muted small" data-i18n="signAddHint"></p>
+				<p class="muted small" data-i18n="signHint"></p>
+				<p class="muted small" data-i18n="signFpHint"></p>
+				<div class="dlg-actions">
+					<button type="button" class="btn" id="signCancel" data-i18n="signCancel">Cancel</button>
+					<button type="button" class="btn primary" id="signDo" data-i18n="signDo" disabled>Sign and download</button>
+				</div>
+			</form>
+		</dialog>
 	</main>
 
 	<script src="js/version.js"></script>

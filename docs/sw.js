@@ -11,7 +11,7 @@ const SCHEMA_FILES = ['5.2.2', '5.2.3', '5.3', '5.3.1', '6.0.1', '6.0.2'].map(v 
 const ASSETS = [
 	'./', 'index.html', 'style.css', 'manifest.webmanifest',
 	'templates/standard.xsl', 'templates/uol.xsl', 'templates/source.xsl',
-	'js/version.js', 'js/app.js', 'js/lang.js', 'js/templates.js', 'js/dsig.js', 'js/payment.js', 'js/validate.js', 'js/tolerant.js', 'js/xslt-config.js',
+	'js/version.js', 'js/app.js', 'js/lang.js', 'js/templates.js', 'js/dsig.js', 'js/sign.js', 'js/payment.js', 'js/validate.js', 'js/tolerant.js', 'js/xslt-config.js',
 	...['cs', 'sk', 'en', 'es', 'de', 'fr', 'it', 'pt'].map(c => 'lang/' + c + '.json'),
 	'vendor/jszip.min.js', 'vendor/qrcode.js', 'vendor/xslt-polyfill.min.js',
 	'vendor/xmllint/index-browser.mjs', 'vendor/xmllint/xmllint-browser.mjs', 'vendor/xmllint/xmllint.wasm',

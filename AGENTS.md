@@ -7,7 +7,8 @@ A no-build static PWA that renders ISDOC / ISDOCX invoices with XSLT, verifies s
 schemas and offers QR payments. The whole site is the `docs/` folder (GitHub Pages). See `README.md` for features.
 
 ## Run and test
-- Serve with `python3 -m http.server 8765 --directory docs` and open `http://localhost:8765`.
+- `make serve` (or `make serve PORT=9000`) starts the server and opens the browser; plain `make` prints the help.
+  Without make: `python3 -m http.server 8765 --bind 127.0.0.1 --directory docs` and open `http://localhost:8765`.
 - There is no automated test suite. Verify changes in a real browser. Useful checks used so far:
   render the samples in `docs/samples/` in every template x language; render a "worst case" invoice (long names, foreign
   currency, discounts, delivery address, longest document type) and look for overlapping text / text outside boxes;
@@ -43,6 +44,20 @@ schemas and offers QR payments. The whole site is the `docs/` folder (GitHub Pag
 - QR payment framing in *UOL IIS* follows the Czech Banking Association graphic manual (quiet zone 4T, 1.5 pt frame,
   caption 16T x 4T, gaps 2T). The data URL SVG from `qrDataUrl()` already includes the 4T quiet zone.
 - The XSD validator needs the XML declaration encoding rewritten to UTF-8 (the text is already decoded).
+
+## Signing
+- Signature note on the invoice: `signatureInfo()` in `app.js` (valid signatures only) -> XSLT params `sigBy`, `sigTime`,
+  `sigCert`, `sigHash`, `sigTrusted` -> `sigbox` in `standard.xsl` / `uol.xsl` (template keys `dsig*`). The hash is of the
+  raw file bytes (not the decoded text), so it equals `shasum -a 256`. In *UOL IIS* the note sits below everything else.
+- Trusted certificates: localStorage `trusted` = `[{fp, name, added}]`, `fp` is the SHA-256 fingerprint of the certificate
+  (not of the key, not of the name). The state is shown in the signature banner/details and in the sign dialog.
+- `docs/js/sign.js` is a port of `client/js/sign.js` from the UOL project and must stay compatible with it (IndexedDB
+  `uol-sign`/`certs`, localStorage `uol.sign.active`, signature ids `uol-sig`/`uol-props`, namespace
+  `https://xml.uol.cz/dsig`). Errors are `SignError` with an i18n key (`ui_sign_*`). Never store or log keys or PEM text.
+- `docs/js/dsig.js` differs from the UOL copy by `der` in `parseCertificate()`, `fingerprint()` and `fpCert`/`fpKey` in the
+  verification result (the verification logic itself is unchanged); mirror them there to keep the copies in sync.
+- A document that already has a signature is re-signed: the dialog warns, `stripSignatures()` splices the old one out of
+  the text first (a second enveloped signature would break the first).
 
 ## Licensing and privacy rules
 - Project code is MIT (`LICENSE`). Third-party code and the ISDOC schemas keep their own licenses

@@ -213,10 +213,17 @@ export function parseCertificate(bytes) {
 		issuer: derName(bytes, issuer),
 		notBefore: derTime(bytes, nb),
 		notAfter: derTime(bytes, na),
+		der: bytes.slice(cert.hdr, cert.end),
 		spki: bytes.slice(spki.hdr, spki.end),
 		keyType: algOid === '1.2.840.113549.1.1.1' ? 'rsa' : algOid === '1.2.840.10045.2.1' ? 'ec' : algOid,
 		curve: alg[1] && alg[1].tag === 0x06 ? CURVES[oid(bytes, alg[1])] : null
 	};
+}
+
+/** SHA-256 fingerprint as upper-case hex pairs separated by colons (the format browsers and OpenSSL show). */
+export async function fingerprint(bytes) {
+	const h = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+	return [...h].map(b => b.toString(16).padStart(2, '0')).join(':').toUpperCase();
 }
 
 /* ------------------------------- Verification ------------------------------- */
@@ -287,6 +294,8 @@ async function verifyOne(doc, sigEl) {
 		return res;
 	}
 	res.signer = signer;
+	res.fpCert = await fingerprint(signer.der); // identifies the exact certificate, not just the name inside it
+	res.fpKey = await fingerprint(signer.spki); // identifies the key pair (stays the same when the certificate is renewed)
 	const st = sigEl.getElementsByTagNameNS('*', 'SigningTime')[0];
 	if (st) res.signingTime = new Date(st.textContent.trim());
 	res.ok = true;

@@ -94,6 +94,7 @@ main { max-width: 900px; margin: 0 auto; padding: 16px; display: grid; gap: 12px
 #val-body ul { margin: 4px 0 0 18px; padding: 0; }
 #val-body li { margin: 2px 0; word-break: break-word; }
 #sig-body dl, #val-body dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 8px 0; }
+#sig-body dd.fp, .cert-text .fp { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
 #sig-body dt, #val-body dt { color: var(--muted); } #sig-body dd, #val-body dd { margin: 0; word-break: break-word; }
 .opts { display: flex; gap: 8px 20px; align-items: center; flex-wrap: wrap; }
 .opts label { cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
@@ -109,3 +110,27 @@ main { max-width: 900px; margin: 0 auto; padding: 16px; display: grid; gap: 12px
 	max-width: calc(100vw - 24px); padding: 10px 14px; background: var(--fg); color: var(--bg); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .3); font-size: 14px; }
 .toast .btn { padding: 4px 12px; background: var(--bg); color: var(--fg); border-color: transparent; }
 @media print { .toast { display: none !important; } }
+
+/* Sign dialog: choose an existing certificate or add a new one. */
+.dlg { width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 24px); padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px;
+	background: var(--card); color: var(--fg); box-shadow: 0 16px 48px rgba(0, 0, 0, .35); overflow: auto; }
+.dlg::backdrop { background: rgba(0, 0, 0, .45); }
+.dlg form { display: grid; gap: 12px; }
+.dlg h2 { margin: 0; font-size: 18px; }
+.dlg p { margin: 0; }
+.small { font-size: 12.5px; }
+.dlg-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.cert-list { display: grid; gap: 6px; }
+.cert-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.cert-item:hover { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+.cert-item.active { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 10%, var(--card)); }
+.cert-item input { flex: none; margin: 0; }
+.cert-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.cert-text .muted { font-size: 13px; }
+.btn.mini, .cert-item .btn { padding: 3px 10px; font-size: 13px; }
+.cert-text .btn.mini { margin-top: 4px; }
+#sig-body dd .btn.mini { margin-left: 6px; }
+.form-error { color: var(--bad); }
+.dlg .error { padding: 8px 12px; }
+.dlg .error.warn { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, var(--card)); }
+@media print { .dlg { display: none !important; } }

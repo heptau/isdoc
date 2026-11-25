@@ -8,7 +8,10 @@ What it does:
 - Opens `.isdoc` and `.isdocx` files (drag & drop, file picker, or as an installed app). Attachments of an ISDOCX archive can be downloaded.
 - Renders invoices with three XSLT layouts: Standard, UOL IIS (laid out for a Czech window envelope) and Source code (syntax-highlighted XML).
 - Eight languages for the app and, independently, for the invoice: Czech, Slovak, English, Spanish, German, French, Italian, Portuguese.
-- Checks the XMLDSig signature (digests and signature value via WebCrypto; shows signer, issuer and validity). It does not check the trust chain or revocation of the certificate.
+- Checks the XMLDSig signature (digests and signature value via WebCrypto; shows signer, issuer, validity and SHA-256 fingerprints of the certificate and public key). It does not check the trust chain or revocation of the certificate.
+- Can print a signature note on the invoice (signer, time, certificate fingerprint, SHA-256 hash of the file) for validly signed documents.
+- Lets the user mark a certificate (by SHA-256 fingerprint) as trusted; documents signed by it are then shown as "valid and trusted". The list stays in the browser.
+- Signs the loaded invoice with the "Sign" button (enveloped XMLDSig, SHA-256, RSA/ECDSA) using a certificate and unencrypted private key added from PEM files; the key stays in the browser (IndexedDB, non-extractable) and the signed file is downloaded.
 - Detects the ISDOC version and validates against the ISDOC XSD schemas (5.2.2 to 6.0.2) with a list of errors and line numbers.
 - Still displays invalid documents: repairs typical defects, shows non-ISDOC XML as source code and malformed XML as numbered text.
 - Creates the Czech QR payment (SPAYD) and the SEPA/EPC QR code (any currency) from the payment details of the invoice.

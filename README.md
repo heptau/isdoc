@@ -15,8 +15,22 @@ Live site: <https://isdoc.80.cz/> · Source: <https://github.com/heptau/isdoc>
 - **8 languages** for both the app and the invoice: Czech, Slovak, English, Spanish, German, French, Italian,
   Portuguese. The invoice language is independent of the app language (it follows it until you change it).
 - **Signature check** (XMLDSig, enveloped): reference digests and the signature value are verified with WebCrypto
-  (RSA‑SHA1/256/384/512, ECDSA); signer, issuer, validity and signing time are shown.
+  (RSA‑SHA1/256/384/512, ECDSA); signer, issuer, validity, signing time and the SHA‑256 fingerprints of the certificate and its public key are shown
+  (the fingerprint tells apart a certificate from a look‑alike with the same name; the *Sign* dialog shows the same value).
   Trust in the certificate chain (CA) and revocation are **not** checked.
+- **Trusted certificates**: a button next to the fingerprint adds the certificate (by its SHA‑256 fingerprint) to a
+  list kept in this browser. Documents signed by a listed certificate are marked *valid and trusted*; the list is
+  per browser and is not a CA check.
+- **Signature note on the printout**: for a validly signed invoice the *Show:* bar offers *Signature* (on by default). It
+  prints the signer, signing time, the certificate's SHA‑256 fingerprint and the SHA‑256 hash of the file (the
+  `.isdoc`, for ISDOCX the one inside), so a paper copy can be matched to the electronic original
+  (`shasum -a 256 invoice.isdoc`). Only the first signature is shown; an invalid signature prints nothing.
+- **Signing**: the *Sign* button next to *Print* signs the loaded ISDOC / ISDOCX (enveloped XMLDSig, exclusive C14N,
+  SHA‑256, RSA or ECDSA) and downloads it as `<name>-signed.isdoc(x)`. The dialog lists stored certificates and lets
+  you add one from PEM files (certificate + unencrypted private key). The key is imported as a non‑extractable
+  WebCrypto key and kept in this browser's IndexedDB; it never leaves the device. Compatible with the UOL client
+  (`docs/js/sign.js` is a port of its `client/js/sign.js`: same record format and signature layout). Signing an already signed
+  document (the dialog warns) replaces the existing signature with the new one.
 - **ISDOC version and validation** against the official XSD schemas (libxml2 compiled to WebAssembly), with the
   list of errors and line numbers.
 - **Lenient display of invalid documents**: schema‑invalid invoices are still rendered; typical defects (junk before
@@ -43,7 +57,7 @@ mobile browsers do not support file handlers; there, use the *Open* button or dr
 There is no build step. Serve the `docs/` folder with any static web server, e.g.:
 
 ```bash
-python3 -m http.server 8765 --directory docs
+python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
 ```
 
 then open <http://localhost:8765>. A service worker and installation need HTTPS or `localhost`.

@@ -10,6 +10,8 @@
   Parameters (optional, passed by the app):
     qrSpayd  data: URL of an image with the Czech QR payment (SPAYD)
     qrEpc    data: URL of an image with the EU QR payment (EPC / SEPA)
+    sigBy, sigTime, sigCert, sigHash, sigTrusted  electronic signature note (signer, signing time, certificate and file
+             SHA-256 fingerprints, 'true' when the certificate is trusted); shown when sigBy is not empty
 -->
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -21,6 +23,11 @@
 
 <xsl:param name="qrSpayd" select="''"/>
 <xsl:param name="qrEpc" select="''"/>
+<xsl:param name="sigBy" select="''"/>
+<xsl:param name="sigTime" select="''"/>
+<xsl:param name="sigCert" select="''"/>
+<xsl:param name="sigHash" select="''"/>
+<xsl:param name="sigTrusted" select="''"/>
 
 <xsl:variable name="nfMoney" select="'{{pMoney}}'"/>
 <xsl:variable name="nfQty" select="'{{pQty}}'"/>
@@ -67,6 +74,11 @@
 		.qrs{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}
 		.qr{text-align:center;font-size:11px;color:#445}
 		.qr img{width:130px;height:130px;display:block;margin:0 auto 2px;image-rendering:pixelated}
+		.sigbox{margin-top:14px;border:1px solid #ccd;border-radius:4px;padding:6px 10px;font-size:11px;color:#445;page-break-inside:avoid}
+		.sigbox strong{color:#1b1f23}
+		.sigbox table td{padding:1px 0;vertical-align:top}
+		.sigbox table td:first-child{color:#667;padding-right:10px;white-space:nowrap}
+		.sigbox .fp{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;word-break:break-all}
 		.notes{margin-top:14px;font-size:12px;white-space:pre-line}
 		.ref{margin-top:12px;font-size:12px}
 		.ref table td,.ref table th{padding:3px 6px;border-bottom:1px solid #e1e3e8;text-align:left}
@@ -167,7 +179,24 @@
 
 	<xsl:apply-templates select="isd:OrderReferences[isd:OrderReference]"/>
 	<xsl:apply-templates select="isd:DeliveryNoteReferences[isd:DeliveryNoteReference]"/>
+
+	<xsl:call-template name="sigbox"/>
 </div>
+</xsl:template>
+
+<!-- electronic signature note (the data come from the app, which verified the signature) -->
+<xsl:template name="sigbox">
+	<xsl:if test="$sigBy != ''">
+		<div class="sigbox">
+			<strong>{{dsigTitle}}</strong><xsl:if test="$sigTrusted = 'true'"> – {{dsigTrusted}}</xsl:if>
+			<table>
+				<tr><td>{{dsigBy}}:</td><td><xsl:value-of select="$sigBy"/></td></tr>
+				<xsl:if test="$sigTime != ''"><tr><td>{{dsigTime}}:</td><td><xsl:value-of select="$sigTime"/></td></tr></xsl:if>
+				<tr><td>{{dsigCert}}:</td><td class="fp"><xsl:value-of select="$sigCert"/></td></tr>
+				<tr><td>{{dsigHash}}:</td><td class="fp"><xsl:value-of select="$sigHash"/></td></tr>
+			</table>
+		</div>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="isd:Party">

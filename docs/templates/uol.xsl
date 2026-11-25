@@ -18,6 +18,11 @@
 <xsl:param name="qrEpc" select="''"/>
 <xsl:param name="qrSpaydU" select="41"/>
 <xsl:param name="qrEpcU" select="41"/>
+<xsl:param name="sigBy" select="''"/>
+<xsl:param name="sigTime" select="''"/>
+<xsl:param name="sigCert" select="''"/>
+<xsl:param name="sigHash" select="''"/>
+<xsl:param name="sigTrusted" select="''"/>
 
 <xsl:variable name="nfMoney" select="'{{pMoney}}'"/>
 <xsl:variable name="nfQty" select="'{{pQty}}'"/>
@@ -128,6 +133,11 @@
 		div.qrp .st{flex:none;width:calc(var(--T) * 2)}
 		div.qrp .fill{flex:1 1 0}
 		div.qrp .cap{flex:none;box-sizing:border-box;margin:0 calc(var(--T) * 2);min-width:calc(var(--T) * 16);height:calc(var(--T) * 4);font-family:Arial,Helvetica,"Liberation Sans",sans-serif;font-weight:bold;font-size:calc(var(--T) * 3.39);line-height:calc(var(--T) * 4);white-space:nowrap}
+		/* Electronic signature note: small, below everything else (the window envelope layout above stays untouched). */
+		div.sigbox{margin:18px 0 0;padding-top:6px;border-top:1px solid #999;font-size:9px;color:#444;page-break-inside:avoid}
+		div.sigbox .row{display:flex;gap:8px;margin:1px 0}
+		div.sigbox .k{flex:none;color:#666}
+		div.sigbox .fp{font-family:Menlo,Consolas,"Liberation Mono",monospace;font-size:8.5px;word-break:break-all}
 		@media print{html,body{background-color:#fff}.page{page-break-after:always;max-width:100%;border:none;margin:0;padding:0}div.footer{page-break-inside:avoid}}
 	</style>
 </head>
@@ -341,6 +351,15 @@
 			<xsl:if test="$qrEpc != ''">
 				<xsl:call-template name="qrbox"><xsl:with-param name="src" select="$qrEpc"/><xsl:with-param name="u" select="$qrEpcU"/><xsl:with-param name="caption">{{uolQrEpc}}</xsl:with-param></xsl:call-template>
 			</xsl:if>
+		</div>
+	</xsl:if>
+
+	<xsl:if test="$sigBy != ''">
+		<div class="sigbox">
+			<div class="row"><strong>{{dsigTitle}}</strong><xsl:if test="$sigTrusted = 'true'"> – {{dsigTrusted}}</xsl:if></div>
+			<div class="row"><span class="k">{{dsigBy}}:</span><span><xsl:value-of select="$sigBy"/></span><xsl:if test="$sigTime != ''"><span class="k">{{dsigTime}}:</span><span><xsl:value-of select="$sigTime"/></span></xsl:if></div>
+			<div class="row"><span class="k">{{dsigCert}}:</span><span class="fp"><xsl:value-of select="$sigCert"/></span></div>
+			<div class="row"><span class="k">{{dsigHash}}:</span><span class="fp"><xsl:value-of select="$sigHash"/></span></div>
 		</div>
 	</xsl:if>
 
